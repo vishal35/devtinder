@@ -6,6 +6,18 @@ const app = express()
 //     res.send('Sending from server at port 3000')
 // })
 
+// app.get('/user/:userId/:name/:password', (req, res) => {
+//     // localhost:3000/user/123/Vish/abcd
+//     console.log(req.params);
+//     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
+// })
+
+// app.get('/user', (req, res) => {
+//     // localhost:3000/user?userId=123&name=Vish
+//     console.log(req.query);
+//     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
+// })
+
 app.get('/user', (req, res) => {
     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
 })
