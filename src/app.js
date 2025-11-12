@@ -18,6 +18,21 @@ const app = express()
 //     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
 // })
 
+app.use('/user', [(req, res, next) => {
+    console.log('Middleware executed');
+    // res.send({firstName: 'Vishal1', lastName: 'Kumar'})
+    next();
+}, (req, res, next) => {
+    // res.send({firstName: 'Vishal22', lastName: 'Kumar'})
+    next();
+}, (req, res, next) => {
+    // res.send({firstName: 'Vishal333', lastName: 'Kumar'})
+    next();
+}, (req, res, next) => {
+    res.send({firstName: 'Vishal4444', lastName: 'Kumar'})
+    // next();
+}])
+
 app.get('/user', (req, res) => {
     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
 })
