@@ -1,6 +1,6 @@
-const express = require('express')
-const { isAuthenticated } = require('./middlewares/auth');
-const app = express()
+const express = require("express");
+const { isAuthenticated } = require("./middlewares/auth");
+const app = express();
 
 // app.use('/', (req, res) => {
 //     res.send('Sending from server at port 3000')
@@ -9,13 +9,13 @@ const app = express()
 // app.get('/user/:userId/:name/:password', (req, res) => {
 //     // localhost:3000/user/123/Vish/abcd
 //     console.log(req.params);
-//     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
+//     res.send({firstName: 'Vishal', lastName: 'Kumar'})
 // })
 
 // app.get('/user', (req, res) => {
 //     // localhost:3000/user?userId=123&name=Vish
 //     console.log(req.query);
-//     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
+//     res.send({firstName: 'Vishal', lastName: 'Kumar'})
 // })
 
 // app.use('/user', [(req, res, next) => {
@@ -34,7 +34,7 @@ const app = express()
 // }])
 
 // app.get('/user', (req, res) => {
-//     res.send({firstName: 'Vishal', lastName: 'Kumar'})  
+//     res.send({firstName: 'Vishal', lastName: 'Kumar'})
 // })
 
 // app.post('/user', (req, res) => {
@@ -51,10 +51,20 @@ const app = express()
 //     res.send('Sending Hello from server at port 3000')
 // })
 
-app.use('/user', isAuthenticated, (req, res) => {
-    res.send({firstName: 'Vishal', lastName: 'Kumar'})
-})
+app.get("/user", isAuthenticated, (req, res) => {
+  res.send({ firstName: "Vishal", lastName: "Kumar" });
+});
+
+// this code is for error handling middleware using err err should be firts argument
+// app.get("/userId", (err, req, res) => {
+//     console.log("Inside userId route");
+//   if (err) {
+//     return res.status(500).send({ error: "Something went wrong" });
+//   } else {
+//     res.send({ userId: "12345" });
+//   }
+// });
 
 app.listen(3000, () => {
-    console.log("Server is listning on port 3000");
-})
+  console.log("Server is listning on port 3000");
+});
