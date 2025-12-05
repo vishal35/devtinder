@@ -3,10 +3,12 @@ const { isAuthenticated } = require("./middlewares/auth");
 const app = express();
 const { connectDB } = require("./config/database");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validate");
 app.use(express.json());
-
+app.use(cookieParser());
 // get user for specific emailId
 app.get("/user", async (req, res) => {
   const userEmail = req.body.emailId;
@@ -103,19 +105,39 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+app.get("/profile", async (req, res) => {
+  try{
+    const {token} = req.cookies;
+    if(!token){
+      throw new Error("Unauthorized access, token missing");
+    }
+    const {_id} = await jwt.verify(token, "DEV@Tinder709");
+    const user = await User.findById(_id);
+    if(!user){
+      throw new Error("User not found");
+    }
+    res.send(user);
+  }catch(err){
+    res.status(500).send("Internal Server Error" + err.message);
+  }
+});
+
 app.get("/login", async (req, res) => {
   const { emailId, password } = req.body;
-  try{
+  try {
     const user = await User.findOne({ emailId });
-    if(!user){
-      throw new Error("Invalid credentials em");
+    if (!user) {
+      throw new Error("Invalid credentials");
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if(!isPasswordValid){
-      throw new Error("Invalid credentials pass");
+    if (isPasswordValid) {
+      const token = await jwt.sign({ _id: user._id }, "DEV@Tinder709")
+      res.cookie("token", token);
+      res.status(200).send("Login Successful");
+    } else {
+      throw new Error("Invalid credentials");
     }
-    res.status(200).send("Login Successful");
-  }catch(err){
+  } catch (err) {
     res.status(500).send("Internal Server Error " + err.message);
   }
 });
@@ -134,7 +156,7 @@ app.post("/signup", async (req, res) => {
       lastName,
       emailId,
       password: passwordHash,
-    })
+    });
     await user.save();
     res.send("User Created Successfully");
   } catch (err) {
